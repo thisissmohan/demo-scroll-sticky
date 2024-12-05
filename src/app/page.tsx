@@ -1,101 +1,65 @@
-import Image from "next/image";
+"use client"
+import { useEffect, useState } from 'react';
+import styles from './globals.module.css';
 
-export default function Home() {
+interface Section {
+  id: string;
+  title: string;
+  description: string;
+}
+
+const sections: Section[] = [
+  { id: 'section-1', title: 'Access World-Class Raffles', description: 'Use CapRelic tokens to enter raffles for premium items like supercars, yachts, and more. Your tokens unlock a world of exclusive prizes.' },
+  { id: 'section-2', title: 'Burn to Win, Burn to Earn', description: 'Every time tokens are used for a raffle, they are burned, reducing supply and creating scarcity that benefits all holders over time.' },
+  { id: 'section-3', title: 'Stake for Exclusive Access', description: 'Stake CapRelic tokens to gain access to exclusive raffles, reduced burn rates, and VIP perks, giving you a long-term edge.' },
+];
+
+const ScrollableContent: React.FC = () => {
+  const [activeSection, setActiveSection] = useState<string>(sections[0].id);
+
+  const handleScroll = () => {
+    const sectionElements = sections.map((section) => document.getElementById(section.id) as HTMLElement);
+
+    const scrollPosition = window.scrollY + window.innerHeight / 2;
+
+    for (let i = sectionElements.length - 1; i >= 0; i--) {
+      if (scrollPosition >= sectionElements[i].offsetTop) {
+        setActiveSection(sectionElements[i].id);
+        break;
+      }
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className={styles.container}>
+      <div className={`${styles.verticalLine} ${activeSection ? styles.active : ''}`}></div>
+      <div className={styles.left}>
+        {sections.map((section, index) => (
+          <div
+            key={section.id}
+            className={`${styles.content} ${activeSection === section.id ? styles.active : ''}`}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+            <div className={styles.number}>0{index + 1}</div>
+          </div>
+        ))}
+      </div>
+      <div className={styles.right}>
+        {sections.map((section) => (
+          <div id={section.id} key={section.id} className={styles.section}>
+            <h3 style={{ fontSize: 100 }}>{section.title}</h3>
+            <p>{section.description}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
-}
+};
+
+export default ScrollableContent;
